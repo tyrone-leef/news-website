@@ -10,11 +10,11 @@ function formatDate(dateString: string) {
     day: 'numeric',
   } as const
 
-  return new Intl.DateTimeFormat('en-US', options).format(date)
+  return new Intl.DateTimeFormat('en-GB', options).format(date)
 }
 
 function App() {
-  const { data } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['news'],
     queryFn: () => getAllNews(),
   })
@@ -23,6 +23,10 @@ function App() {
   return (
     <>
       <h1 className="text-red-700 text-6xl font-bold text-center m-5">News</h1>
+      <div className="flex justify-center">
+        <p>{isLoading ? <span className="loader"></span> : ''}</p>
+        <p>{isError ? 'something went wrong' : ''}</p>
+      </div>
       <ul>
         {data &&
           data.articles.map((n, index) => (
