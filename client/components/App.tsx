@@ -48,7 +48,7 @@ function App() {
 
       {/* Search */}
       <form onSubmit={handleSubmit}>
-        <div className="flex justify-center gap-2.5">
+        <div className="flex justify-center gap-2.5 mx-80">
           {startSearch ? (
             <>
               <input
@@ -73,7 +73,7 @@ function App() {
       </form>
 
       {/* Sort */}
-      <div className="flex flex-col mx-20 w-40">
+      <div className="flex flex-col mx-48 mt-10 w-40">
         <label
           htmlFor="sort"
           className="block mb-2 text-lg text-gray-900 font-medium"
