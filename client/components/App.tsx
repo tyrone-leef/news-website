@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getAllNews } from '../apis/news'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 function formatDate(dateString: string) {
   const date = new Date(dateString)
@@ -17,10 +17,13 @@ function formatDate(dateString: string) {
 function App() {
   const sortArr = ['relevancy', 'popularity', 'publishedAt']
   const [sort, setSort] = useState(sortArr[0])
+  const [search, setSearch] = useState('keyword')
+  const [userInput, setUserInput] = useState('')
+  const [startSearch, setStartSearch] = useState(false)
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['news', sort],
-    queryFn: () => getAllNews(sort),
+    queryKey: ['news', sort, search],
+    queryFn: () => getAllNews(sort, search),
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -28,10 +31,48 @@ function App() {
     setSort(selectedSort)
   }
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setSearch(userInput)
+    setStartSearch(false)
+  }
+
+  const handleStartSearching = () => {
+    setStartSearch(true)
+  }
+
   console.log(data)
   return (
     <>
       <h1 className="text-red-700 text-6xl font-bold text-center m-5">News</h1>
+
+      {/* Search */}
+      <form onSubmit={handleSubmit}>
+        <div className="flex justify-center gap-2.5">
+          {startSearch ? (
+            <>
+              <input
+                type="text"
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                className="border border-black rounded w-full"
+              />
+              <button type="submit" className="hover:text-pink-700 text-3xl">
+                Search
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={handleStartSearching}
+              className="hover:text-pink-700 text-3xl"
+            >
+              Search
+            </button>
+          )}
+        </div>
+      </form>
+
+      {/* Sort */}
       <div className="flex flex-col mx-20 w-40">
         <label
           htmlFor="sort"
@@ -53,6 +94,8 @@ function App() {
             ))}
         </select>
       </div>
+
+      {/* List of articles */}
       <div className="flex justify-center">
         <p>{isLoading ? <span className="loader"></span> : ''}</p>
         <p>{isError ? 'something went wrong' : ''}</p>
